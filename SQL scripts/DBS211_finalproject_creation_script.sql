@@ -1,0 +1,83 @@
+-- Drop existing tables if they exist
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE Customer CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE Vehicle CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE VehicleTypes CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE Rental CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE Insurance CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE Payment CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE Locations CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE Employee CASCADE CONSTRAINTS';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN
+            RAISE;
+        END IF;
+END;
+/
+
+CREATE TABLE Customer (
+    CustomerID INT PRIMARY KEY,
+    First_Name VARCHAR(50) NOT NULL,
+    Last_Name VARCHAR(50) NOT NULL,
+    BirthDate DATE NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Phone VARCHAR(15) NOT NULL,
+    LicenseNumber VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE VehicleTypes (
+    VehicleType_ID INT PRIMARY KEY,
+    TypeName VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Vehicle (
+    Vehicle_ID INT PRIMARY KEY,
+    Make VARCHAR(50) NOT NULL,
+    Model VARCHAR(50) NOT NULL,
+    Year INT CHECK (Year BETWEEN 1900 AND 2100) NOT NULL,
+    LicensePlate VARCHAR(20) UNIQUE NOT NULL,
+    RentalStatus VARCHAR(20) NOT NULL,
+    VehicleTypeID INT,
+    FOREIGN KEY (VehicleTypeID) REFERENCES VehicleTypes(VehicleType_ID)
+);
+
+CREATE TABLE Insurance (
+    Insurance_ID INT PRIMARY KEY,
+    Provider VARCHAR(50) NOT NULL,
+    PolicyNumber VARCHAR(20) UNIQUE NOT NULL,
+    Ins_StartDate DATE NOT NULL,
+    Ins_EndDate DATE NOT NULL,
+    CoverageAmount FLOAT(2) NOT NULL CHECK (CoverageAmount BETWEEN 0 AND 999999.99)
+);
+
+CREATE TABLE Employee (
+    Employee_ID INT PRIMARY KEY,
+    EmpFirstName VARCHAR(50) NOT NULL,
+    EmpLastName VARCHAR(50) NOT NULL,
+    EmpEmail VARCHAR(100) UNIQUE NOT NULL,
+    EmpPhone VARCHAR(15) NOT NULL,
+    EmpPosition VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Rental (
+    Rental_ID INT PRIMARY KEY,
+    Rent_StartDate DATE NOT NULL,
+    Rent_EndDate DATE NOT NULL,
+    TotalAmount FLOAT(2) NOT NULL CHECK (TotalAmount BETWEEN 0 AND 9999.99),
+    Customer_ID INT,
+    Vehicle_ID INT,
+    Employee_ID INT,
+    FOREIGN KEY (Customer_ID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (Vehicle_ID) REFERENCES Vehicle(Vehicle_ID),
+    FOREIGN KEY (Employee_ID) REFERENCES Employee(Employee_ID)
+);
+
+CREATE TABLE Payment (
+    Payment_ID INT PRIMARY KEY,
+    PaymentDate DATE NOT NULL,
+    Amount FLOAT(2) NOT NULL CHECK (Amount BETWEEN 0 AND 9999.99),
+    PaymentMethod VARCHAR(50) NOT NULL,
+    Rental_ID INT,
+    FOREIGN KEY (Rental_ID) REFERENCES Rental(Rental_ID)
+);
