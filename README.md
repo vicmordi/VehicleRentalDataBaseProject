@@ -1,7 +1,7 @@
 # 🚗 Vehicle Rental Database Project – DBS211
 
 Final Project for **DBS211 – Database Systems**  
-Seneca College | Summer 2024 | Group 8
+Seneca College | Summer 2024
 
 ## 📘 Project Overview
 
@@ -18,8 +18,8 @@ This project not only demonstrates our team’s understanding of **data modeling
 - **SQL** (Oracle-style syntax)
 - **ER Modeling** (UML-style Entity Relationship Diagram)
 - **Data Dictionary**
-- **SQL Developer / DBeaver**
-- **Git & GitHub for Version Control**
+- **SQL Developer**
+  
 
 ---
 ## 📂 Project Files
